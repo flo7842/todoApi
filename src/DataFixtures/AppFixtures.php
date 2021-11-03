@@ -40,7 +40,7 @@ class AppFixtures extends Fixture
                 $user->setCreatedAt(new DateTime());
                 $user->setNbrOfTasks(mt_rand(1, 4));
                 $user->addTask($task);
-                $manager->persist($user); 
+                $manager->persist($user);
             }
         }
 
