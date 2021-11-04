@@ -25,23 +25,23 @@ class AppFixtures extends Fixture
 
         $faker = Factory::create('fr-FR');
 
-        for ($i = 0; $i < 10; $i++) {
-            $task = new Task();
-            $task->setTitle('task '.$i);
-            $task->setCreatedAt(new DateTime());
-            $task->setStatus(mt_rand(0, 1));
-            $manager->persist($task);
-
-            for($j = 0; $j < 5; $j++){
-                $user = new User();
-                $user->setEmail($faker->email);
-                $user->setPassword($this->encoder->encodePassword($user, 'password'));
-                $user->setNbrOfTasks(mt_rand(1, 4));
-                $user->setCreatedAt(new DateTime());
-                $user->setNbrOfTasks(mt_rand(1, 4));
-                $user->addTask($task);
-                $manager->persist($user);
+        for($j = 0; $j < 5; $j++){
+            $user = new User();
+            $user->setEmail($faker->email);
+            $user->setPassword($this->encoder->encodePassword($user, 'password'));
+            $user->setCreatedAt(new DateTime());
+            
+            
+            for ($i = 0; $i < mt_rand(0, 20); $i++) {
+                $task = new Task();
+                $task->setTitle('task '.$i);
+                $task->setCreatedAt(new DateTime());
+                $task->setStatus(mt_rand(0, 1));
+                $task->setUserTask($user);
+                $manager->persist($task);
+    
             }
+            
         }
 
         $adminUser = new User();

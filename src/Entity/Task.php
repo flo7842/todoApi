@@ -14,9 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=TaskRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
-*     attributes={
- *          "pagination_items_per_page"=10
- *     }
+ *   attributes={
+ *     "pagination_items_per_page"=10
+ *   },
+ *   normalizationContext={"groups"={"task_read"}}
  * )
  * @ApiFilter(BooleanFilter::class, properties={"status"})
  */
@@ -36,6 +37,13 @@ class Task
      *     match=false,
      *     message="Your name cannot contain a number"
      * )
+     * @Assert\Length( 
+     *      min = 3,
+     *      max = 50,
+     *      minMessage = "Le titre de la tâche doit faire plus de 3 caractères",
+     *      maxMessage = "Le titre de la tâche ne doit pas faire plus de 50 caractères"
+     * )
+     * @Groups({"user_read"})
      */
     private $title;
 

@@ -4,15 +4,20 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ * @ApiResource(
+ *     normalizationContext={"groups"={"user_read"}}
+ * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -20,14 +25,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"user_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Email(
-     *     message = "The email '{{ value }}' is not a valid email."
+     *     message = "L'adresse email n'est pas au bon format"
      * )
+     * @Groups({"user_read"})
      */
     private $email;
 
@@ -39,6 +46,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\Length( 
+     *   min = 8,
+     *   minMessage = "Le mot de passe doit faire plus de 3 caractères"
+     * )
      */
     private $password;
 
@@ -69,6 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Task::class, mappedBy="userTask")
+     * @Groups({"user_read"})
      */
     private $tasks;
 
@@ -181,6 +193,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getNbrOfTasks(): ?int
     {
         return $this->nbrOfTasks;
+    }
+
+    /**
+     *
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function prePersist(){
+        if(empty($this->nbrOfTasks)){
+            $this->nbrOfTasks = count($this->getTasks());
+        }
     }
 
     public function setNbrOfTasks(?int $nbrOfTasks): self
