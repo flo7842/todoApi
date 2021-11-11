@@ -1,0 +1,9 @@
+# config/packages/mailer.yaml
+framework:
+    mailer:
+        envelope:
+            sender: 'florian_bracq@hotmail.fr'
+            recipients: ['florianbracq42@gmail.com', 'florian_bracq@hotmail.fr']
+        headers:
+            from: 'Fabien <florian_bracq@hotmail.fr>'
+            X-Custom-Header: 'Content-Type: application/json'

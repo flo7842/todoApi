@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Admin;
 use App\Entity\Task;
 use App\Entity\User;
 use Faker\Factory;
@@ -25,14 +26,14 @@ class AppFixtures extends Fixture
 
         $faker = Factory::create('fr-FR');
 
-        for($j = 0; $j < 5; $j++){
+        for($j = 0; $j < 3; $j++){
             $user = new User();
             $user->setEmail($faker->email);
             $user->setPassword($this->encoder->encodePassword($user, 'password'));
             $user->setCreatedAt(new DateTime());
             
             
-            for ($i = 0; $i < mt_rand(0, 20); $i++) {
+            for ($i = 0; $i < mt_rand(0, 5); $i++) {
                 $task = new Task();
                 $task->setTitle('task '.$i);
                 $task->setCreatedAt(new DateTime());
@@ -44,10 +45,9 @@ class AppFixtures extends Fixture
             
         }
 
-        $adminUser = new User();
+        $adminUser = new Admin();
         $adminUser->setEmail("florianbracq42@gmail.com");
-        $adminUser->setPassword($this->encoder->encodePassword($adminUser, 'password'));
-        $adminUser->setRoles(['ROLE_ADMIN']);
+        $adminUser->setPassword($this->encoder->encodePassword($user, 'password'));
     
         $manager->persist($adminUser);
 
