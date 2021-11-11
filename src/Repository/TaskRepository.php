@@ -19,6 +19,18 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function findAllTrueStatus()
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+        "SELECT COUNT (p)
+         FROM App\Entity\Task p
+         WHERE p.status = 'false'");
+ 
+        // returns an array of Product objects
+        return $query->execute();
+    }
+
     // /**
     //  * @return Task[] Returns an array of Task objects
     //  */

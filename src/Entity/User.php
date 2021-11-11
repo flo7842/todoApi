@@ -16,7 +16,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  * @ApiResource(
- *     normalizationContext={"groups"={"user_read"}}
+ *     normalizationContext={"groups"={"user_read"}},
+ * itemOperations={
+ *          "GET"={
+ * 				"path"="user/{id}"
+ * 			},
+ *          "PUT"={
+ * 				"path"="user/{id}"
+ * 			},
+ *          "DELETE"={
+ * 				"path"="user/{id}"
+ * 			},
+ *      }
  * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -70,6 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"user_read"})
      */
     private $createdAt;
 
@@ -79,7 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $lastConnexion;
 
     /**
-     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="userTask")
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="userTask", cascade={"persist"})
      * @Groups({"user_read"})
      */
     private $tasks;
@@ -265,5 +277,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getUsername();
     }
 }

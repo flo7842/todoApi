@@ -17,7 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
  *   attributes={
  *     "pagination_items_per_page"=10
  *   },
- *   normalizationContext={"groups"={"task_read"}}
+ *   normalizationContext={"groups"={"task_read"}},
+
  * )
  * @ApiFilter(BooleanFilter::class, properties={"status"})
  */
@@ -54,6 +55,7 @@ class Task
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"user_read"})
      */
     private $status = false;
 
@@ -63,7 +65,7 @@ class Task
     private $lastModified;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks", cascade={"persist"})
      */
     private $userTask;
 
